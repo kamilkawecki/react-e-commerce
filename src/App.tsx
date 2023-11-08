@@ -69,7 +69,10 @@ function App() {
         <input
           type="file"
           onChange={(event) => {
-            setImageUpload(event.target.files?.[0] as File);
+            const file = event.target.files?.[0] as File | undefined;
+            if(file){
+              setImageUpload(file);
+            }
           }}
         />
         <button onClick={uploadFile}> Upload Image</button>
