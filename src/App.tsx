@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import ProductItem from "./components/ProductItem";
 
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { storage } from "./firebase/firebase";
+
 export type Product = {
   id: string | number;
   name: string;
@@ -11,6 +14,18 @@ export type Products = Product[];
 
 function App() {
   const [products, setProducts] = useState<Products>([]);
+
+  const [imageUpload, setImageUpload] = useState(null);
+
+  const uploadFile = () => {
+    if (imageUpload == null) return;
+    const imageRef = ref(storage, `images/${imageUpload.name}`);
+    uploadBytes(imageRef, imageUpload).then((snapshot) => {
+      getDownloadURL(snapshot.ref).then((url) => {
+        console.log(url);
+      });
+    });
+  };
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -39,6 +54,7 @@ function App() {
   return (
     <div className="min-h-screen p-8">
       <div className="m-auto">
+        <h2>PRODUCTS</h2>
         {products.map((product) => (
           <ProductItem
             key={product.id}
@@ -47,6 +63,16 @@ function App() {
             price={product.price}
           />
         ))}
+      </div>
+      <div>
+        <h2>ADD PRODUCT</h2>
+        <input
+          type="file"
+          onChange={(event) => {
+            setImageUpload(event.target.files[0]);
+          }}
+        />
+        <button onClick={uploadFile}> Upload Image</button>
       </div>
     </div>
   );
