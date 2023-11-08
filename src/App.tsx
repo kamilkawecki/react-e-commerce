@@ -15,7 +15,7 @@ export type Products = Product[];
 function App() {
   const [products, setProducts] = useState<Products>([]);
 
-  const [imageUpload, setImageUpload] = useState(null);
+  const [imageUpload, setImageUpload] = useState<File | null>(null);
 
   const uploadFile = () => {
     if (imageUpload == null) return;
@@ -39,8 +39,8 @@ function App() {
       for (const key in responseData) {
         loadedProducts.push({
           id: key,
-          name: responseData[key]?.name,
-          price: responseData[key]?.price,
+          name: responseData[key].name,
+          price: responseData[key].price,
         });
       }
 
@@ -69,7 +69,7 @@ function App() {
         <input
           type="file"
           onChange={(event) => {
-            setImageUpload(event.target.files[0]);
+            setImageUpload(event.target.files?.[0] as File);
           }}
         />
         <button onClick={uploadFile}> Upload Image</button>
